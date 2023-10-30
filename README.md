@@ -37,4 +37,3 @@ El servidor tiene dos puntos finales configurados:
 - `POST /api/create-money-transfer`: Permite enviar datos a través de una solicitud POST. Los datos recibidos se registran en la consola.
 
 ¡Eso es todo! Ahora tienes un servidor TypeScript en funcionamiento y puedes comenzar a desarrollar tu aplicación web. Diviértete programando!
-# currencyBirdTest_

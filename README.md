@@ -38,7 +38,13 @@ Una vez que todas las dependencias estén instaladas, puedes iniciar el servidor
 
 2. **Documentación endpoint**:
 
-# Documentación del Endpoint: POST /create-money-transfer
+# Documentación del Endpoint:
+
+`POST /create-money-transfer`
+
+El programa corre en local, pudes probar el endpoint con una solicitud POST a:
+
+- http://localhost:3001/create-money-transfer
 
 Este endpoint permite crear una transferencia de dinero. Los datos de la transferencia, como el código de transferencia y la cantidad, se envían en el cuerpo de la solicitud. El endpoint realiza las siguientes acciones:
 

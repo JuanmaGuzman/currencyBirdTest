@@ -2,10 +2,11 @@
 
 Para configurar y ejecutar el proyecto, sigue estos pasos:
 
-### 1. Clonar el repositorio
+### 1. Clonar el repositorio y después entrar a la api
 
 git clone "repo"
-cd api
+
+`cd api`
 
 ### 2. Instalar las dependencias
 
@@ -72,7 +73,10 @@ Este endpoint permite crear una transferencia de dinero. Los datos de la transfe
 
 ## Ejemplo de solicitud:
 
+Poner en el body:
 {
 "transferCode": "jmguzman1@uc.cl",
 "amount": 100
 }
+
+\*\* No se requiere token de autentificación.

@@ -1,14 +1,14 @@
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
-
 import './database';
 import Trasferrouter from './routes/Transfer.routes';
 
-
 const app = express();
+
 app.set('port', 3001);
 
 app.use(bodyParser.json());
+
 app.use(Trasferrouter);
 
 app.use((req: Request, res: Response, next) => {

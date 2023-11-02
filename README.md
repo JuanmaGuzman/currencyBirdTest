@@ -1,7 +1,3 @@
-# My TypeScript Server
-
-Este es un proyecto de ejemplo que muestra cómo configurar y ejecutar un servidor TypeScript con Express.
-
 ## Configuración
 
 Para configurar y ejecutar el proyecto, sigue estos pasos:

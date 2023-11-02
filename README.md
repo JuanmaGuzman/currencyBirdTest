@@ -4,7 +4,7 @@ Para configurar y ejecutar el proyecto, sigue estos pasos:
 
 ### 1. Clonar el repositorio
 
-git clone https://tu-repositorio.git
+git clone "repo"
 cd api
 
 ### 2. Instalar las dependencias
@@ -19,58 +19,60 @@ Una vez que todas las dependencias estén instaladas, puedes iniciar el servidor
 
 `npm start`
 
-Esto utilizará nodemon para ejecutar el servidor TypeScript en modo de desarrollo. Cualquier cambio que hagas en los archivos se reflejará automáticamente sin necesidad de reiniciar el servidor.
+- Esto utilizará nodemon para ejecutar el servidor TypeScript en modo de desarrollo. Cualquier cambio que hagas en los archivos se reflejará automáticamente sin necesidad de reiniciar el servidor.
+- El servidor estará disponible en `http://localhost:3000`. Puedes acceder al servidor en tu navegador web o utilizar herramientas como Postman para probar los puntos finales definidos en el servidor.
 
-### 4. Acceder al servidor
+1. **Configuración y archivos**:
 
-El servidor estará disponible en `http://localhost:3000`. Puedes acceder al servidor en tu navegador web o utilizar herramientas como Postman para probar los puntos finales definidos en el servidor.
+   Carpetas y archivos principales:
 
-## Puntos finales
+   - Models: Contiene el modelo de transferencias que será almacenado en la base de datos.
+   - Routes: Contiene los endpoints de la API. Acá esta la lógica del programa.
+   - app.ts: Levanta el servido.
+   - database: Levanta la bd. Se define una base de datos local en mongodb, las credenciales estan en el archivo .env.
 
-El servidor tiene dos puntos finales configurados:
+   Otros:
 
-- `POST /create-money-transfer`: Permite enviar datos a través de una solicitud POST. Los datos recibidos se registran en la consola.
+   - .env: Se creó un archivo .env por buenas prácticas, pero obviamente se sube este archivo para que se pueda corregir el programa.
 
-## Flujo del Programa
+2. **Documentación endpoint**:
 
-El programa sigue un flujo específico al recibir una solicitud para crear una transferencia. A continuación se describe paso a paso:
+# Documentación del Endpoint: POST /create-money-transfer
 
-1. **Configuración de las URLs**:
+Este endpoint permite crear una transferencia de dinero. Los datos de la transferencia, como el código de transferencia y la cantidad, se envían en el cuerpo de la solicitud. El endpoint realiza las siguientes acciones:
 
-   - Las URLs de las API externas se definen en las constantes `TOKEN_API_URL` y `TRANSFER_API_URL`.
+1. Verifica si la transferencia ya existe en la base de datos local.
 
-2. **Definición de la Interfaz de Respuesta**:
+   - Si la transferencia ya existe, devuelve un error con un código de estado 400 y un mensaje indicando que la transferencia ya se ha completado.
 
-   - Se define la interfaz `TransferApiResponse` para representar la estructura esperada de la respuesta de la API externa.
+2. Obtiene un token de autorización llamando a un servicio externo mediante la función `getToken`.
 
-3. **Función `createTransfer`**:
+   - Si no se puede obtener el token, maneja el error y responde con un código de estado 500.
 
-   - La función `createTransfer` se encarga de realizar una solicitud POST a la API de transferencias externa para crear una nueva transferencia.
-   - Se proporcionan los datos necesarios, como el `transferCode`, el `amount`, y el `authToken` para la autorización.
-   - Se utiliza Axios para realizar la solicitud a la URL `TRANSFER_API_URL` con la autorización proporcionada.
-   - La respuesta de la API externa se almacena en `externalApiResponse`.
-   - Si la solicitud se realiza con éxito, se devuelve la respuesta, y se imprime un mensaje indicando que la API externa se alcanzó con éxito.
-   - Si ocurre algún error, se maneja adecuadamente y se lanza para su posterior manejo.
+3. Crea una nueva transferencia llamando a un servicio externo mediante la función `createTransfer`.
 
-4. **Función `getToken`**:
+   - Si la respuesta del servicio externo es válida, procede a los siguientes pasos; de lo contrario, responde con un error y un código de estado 400.
 
-   - La función `getToken` se encarga de obtener un token de autorización haciendo una solicitud GET a la URL `TOKEN_API_URL`.
-   - Se utiliza Axios para realizar la solicitud.
-   - Si la respuesta contiene datos válidos, se registra el token en la consola y se devuelve.
-   - Si la respuesta no contiene datos válidos o si ocurre un error, se maneja y se registran mensajes de error.
+4. Crea una nueva entrada de transferencia en la base de datos local con la fecha actual.
 
-5. **Manejo de Solicitudes POST en `/create-transfer`**:
+   - Si se produce un error al guardar la transferencia en la base de datos local, responde con un código de estado 500.
 
-   - Cuando se recibe una solicitud POST en la ruta `/create-transfer`, se extraen los datos del cuerpo de la solicitud, incluyendo `transferCode` y `amount`.
-   - Se verifica si ya existe una transferencia con el mismo código en la base de datos local (`existingTransfer`).
-   - Si ya existe una transferencia, se envía una respuesta de error.
-   - Se obtiene un token de autorización utilizando la función `getToken`.
-   - Se llama a la función `createTransfer` para realizar la solicitud POST a la API externa con los datos proporcionados y el token de autorización.
-   - Si la respuesta de la API externa contiene datos válidos, se crea una nueva transferencia local con la fecha actual.
-   - La nueva transferencia se guarda en la base de datos local.
-   - Se imprime un mensaje indicando que la transferencia se guardó en la base de datos local y se devuelve la transferencia creada en la respuesta.
-   - Si ocurre algún error durante la creación de la transferencia local, se maneja adecuadamente y se envía una respuesta de error.
-   - Si la respuesta de la API externa no contiene datos válidos, se envía una respuesta de error indicando que la transferencia no se pudo crear en la API externa.
+5. Responde con un código de estado 201 y los detalles de la transferencia creada en caso de éxito.
 
-6. **Manejo de Errores Generales**:
-   - En caso de cualquier error general, ya sea durante la verificación de la existencia de la transferencia local o durante la obtención del token, se maneja adecuadamente y se envía una respuesta de error con un mensaje informativo.
+## Parámetros de entrada (en el cuerpo de la solicitud):
+
+- `transferCode` (string): El código de la transferencia.
+- `amount` (int): La cantidad de dinero a transferir.
+
+## Respuestas:
+
+- Código de estado 201 (Created): La transferencia se creó con éxito. La respuesta incluye los detalles de la transferencia.
+- Código de estado 400 (Bad Request): Se produjo un error al crear la transferencia debido a una respuesta no válida del servicio externo o porque la transferencia ya existía.
+- Código de estado 500 (Internal Server Error): Se produjo un error interno del servidor al guardar la transferencia en la base de datos local o al obtener el token de autorización.
+
+## Ejemplo de solicitud:
+
+{
+"transferCode": "jmguzman1@uc.cl",
+"amount": 100
+}

@@ -72,35 +72,6 @@ const getToken = async () => {
   }
 };
 
-const checkTransferExistence = async (authToken: string) => {
-  try {
-    const headers = {
-      Authorization: authToken,
-    };
-
-    // Call the API to check if a transfer exists for a specific ID.
-    const response = await axios.get(GENERAL_PAYMENT_URL, { headers });
-
-    if (response.data) {
-      // Log the transfer existence status
-      console.log(
-        "Transfer exists for the specific transferCode:",
-        response.data,
-      );
-      return response.data;
-    } else {
-      // Handle unexpected response status or missing existence data
-      console.error(
-        "Unexpected response status or missing existence data when checking transfer:",
-        response.status,
-      );
-    }
-  } catch (error) {
-    // Handle errors and log them
-    console.error("Error checking transfer existence:", error);
-    throw new Error("Failed to check transfer existence");
-  }
-};
 
 router.post("/create-money-transfer", async (req: Request, res: Response) => {
   const { transferCode, amount } = req.body;
@@ -167,3 +138,34 @@ router.post("/create-money-transfer", async (req: Request, res: Response) => {
 });
 
 export default router;
+
+
+// const checkTransferExistence = async (authToken: string) => {
+//   try {
+//     const headers = {
+//       Authorization: authToken,
+//     };
+
+//     // Call the API to check if a transfer exists for a specific ID.
+//     const response = await axios.get(GENERAL_PAYMENT_URL, { headers });
+
+//     if (response.data) {
+//       // Log the transfer existence status
+//       console.log(
+//         "Transfer exists for the specific transferCode:",
+//         response.data,
+//       );
+//       return response.data;
+//     } else {
+//       // Handle unexpected response status or missing existence data
+//       console.error(
+//         "Unexpected response status or missing existence data when checking transfer:",
+//         response.status,
+//       );
+//     }
+//   } catch (error) {
+//     // Handle errors and log them
+//     console.error("Error checking transfer existence:", error);
+//     throw new Error("Failed to check transfer existence");
+//   }
+// };

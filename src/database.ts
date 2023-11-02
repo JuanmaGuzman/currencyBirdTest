@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import dotenv from 'dotenv';
 dotenv.config()
 
-const dbURI = `mongodb://${process.env.MDB_USERNAME}:${process.env.MDB_PASSWORD}@127.0.0.1:27017/currencyBird`;
+const dbURI = `mongodb://127.0.0.1:27017/currencyBird`;
 console.log("Using database URI:", dbURI); 
 
 mongoose
